@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Water Calculator with Tank & Pump Suggestions</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: 30px auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+    }
+    label, input, select {
+      display: block;
+      margin-bottom: 12px;
+      width: 100%;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #eef;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+    .pump-card img {
+      width: 100%;
+      max-width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Water Calculator</h2>
+
+  <label for="municipality">Select Your Municipality:</label>
+  <select id="municipality">
+    <option value="">-- Choose Municipality --</option>
+  </select>
+
+  <label for="monthlyCost">Average Monthly Water Bill (Rands):</label>
+  <input type="number" id="monthlyCost" placeholder="e.g. 300" />
+
+  <label for="backupDays">Number of Days for Backup Water:</label>
+  <input type="number" id="backupDays" placeholder="e.g. 3" />
+
+  <button onclick="calculateWater()">Calculate</button>
+
+  <div id="result" class="result" style="display: none;"></div>
+
+  <label for="tankSelect" style="display:none;" id="tankLabel">Select a JoJo Tank:</label>
+  <select id="tankSelect" style="display:none;"></select>
+
+  <div id="pumpRecommendations" class="result" style="display:none;"></div>
+
+  <script>
+    const jojoTanks = [
+      { size: 260, label: "260L - Emergency/Garden Use" },
+      { size: 525, label: "525L - Small Household/Garden Use" },
+      { size: 750, label: "750L - Basic Backup" },
+      { size: 1000, label: "1000L - Small Family Daily Use" },
+      { size: 1500, label: "1500L - Moderate Daily Use" },
+      { size: 2200, label: "2200L - Backup for 2–3 People" },
+      { size: 2500, label: "2500L - Popular Rainwater Harvesting" },
+      { size: 5000, label: "5000L - Full Household Backup" },
+      { size: 10000, label: "10000L - Large Families/Farm Use" },
+      { size: 15000, label: "15000L - Industrial Use" },
+      { size: 20000, label: "20000L - Large Scale Storage" }
+    ];
+
+    const municipalities = [
+      { name: "City of Johannesburg", rate: 0.045 },
+      { name: "City of Tshwane", rate: 0.050 },
+      { name: "City of Ekurhuleni", rate: 0.048 },
+      { name: "Mogale City", rate: 0.047 },
+      { name: "Rand West City", rate: 0.042 },
+      { name: "Merafong City", rate: 0.043 },
+      { name: "Lesedi", rate: 0.040 },
+      { name: "Midvaal", rate: 0.044 },
+      { name: "Emfuleni", rate: 0.041 }
+    ];
+
+    const pumpRecommendations = {
+      260: ["0.37kW Basic", "0.37kW Peripheral"],
+      525: ["0.37kW Peripheral", "0.55kW Centrifugal"],
+      750: ["0.55kW Centrifugal", "0.6kW Jet"],
+      1000: ["0.6kW Jet", "0.75kW Centrifugal"],
+      1500: ["0.75kW Centrifugal", "1.1kW Centrifugal"],
+      2200: ["1.1kW Centrifugal", "0.75kW VSD"],
+      2500: ["0.75kW HVSD", "1.5kW HVSD"],
+      5000: ["1.5kW HVSD"],
+      10000: ["1.5kW HVSD"],
+      15000: ["1.5kW HVSD"],
+      20000: ["1.5kW HVSD"]
+    };
+
+    const muniDropdown = document.getElementById("municipality");
+    municipalities.forEach(muni => {
+      const opt = document.createElement("option");
+      opt.value = muni.name;
+      opt.textContent = muni.name;
+      muniDropdown.appendChild(opt);
+    });
+
+    function populateTankOptions() {
+      const select = document.getElementById("tankSelect");
+      select.innerHTML = `<option value="">-- Choose a tank size --</option>`;
+      jojoTanks.forEach(tank => {
+        const option = document.createElement("option");
+        option.value = tank.size;
+        option.textContent = `${tank.label}`;
+        select.appendChild(option);
+      });
+    }
+
+    function calculateWater() {
+      const monthlyCost = parseFloat(document.getElementById("monthlyCost").value);
+      const backupDays = parseInt(document.getElementById("backupDays").value);
+      const selectedMuni = document.getElementById("municipality").value;
+
+      if (!selectedMuni || isNaN(monthlyCost) || isNaN(backupDays)) {
+        alert("Please select your municipality and enter valid values.");
+        return;
+      }
+
+      const muniRate = municipalities.find(m => m.name === selectedMuni).rate;
+      const litersPerMonth = monthlyCost / muniRate;
+      const dailyUsage = litersPerMonth / 30;
+      const backupLiters = dailyUsage * backupDays;
+      const suggestedTank = jojoTanks.find(tank => tank.size >= backupLiters);
+
+      document.getElementById("result").style.display = "block";
+      document.getElementById("result").innerHTML = `
+        <strong>Municipality:</strong> ${selectedMuni}<br>
+        <strong>Water Rate:</strong> R${muniRate.toFixed(3)} per litre (≈ R${(muniRate * 1000).toFixed(2)}/kl)<br><br>
+        Estimated monthly usage: <strong>${litersPerMonth.toFixed(2)} liters</strong><br>
+        Average daily usage: <strong>${dailyUsage.toFixed(2)} liters/day</strong><br>
+        Backup required: <strong>${backupLiters.toFixed(2)} liters</strong><br>
+        Suggested JoJo Tank: <strong>${suggestedTank ? suggestedTank.label : "No suitable tank found"}</strong>
+      `;
+
+      document.getElementById("tankLabel").style.display = "block";
+      document.getElementById("tankSelect").style.display = "block";
+      populateTankOptions();
+
+      if (suggestedTank) {
+        document.getElementById("tankSelect").value = suggestedTank.size;
+        showPumpRecommendations(suggestedTank.size);
+      }
+    }
+
+    document.getElementById("tankSelect").addEventListener("change", function () {
+      const selectedSize = parseInt(this.value);
+      showPumpRecommendations(selectedSize);
+    });
+
+    function showPumpRecommendations(tankSize) {
+      const pumpList = pumpRecommendations[tankSize] || [];
+      const pumpContainer = document.getElementById("pumpRecommendations");
+      pumpContainer.style.display = "block";
+
+      if (pumpList.length > 0) {
+        pumpContainer.innerHTML = `<h3>Recommended Pumps:</h3>` + pumpList.map(pump => `
+          <div class="pump-card">
+            <strong>${pump}</strong><br>
+            <img src="placeholder.jpg" alt="${pump} image" />
+          </div>
+        `).join("");
+      } else {
+        pumpContainer.innerHTML = `<p>No pump recommendations available for this tank size.</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
