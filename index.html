@@ -1,10 +1,12 @@
+
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Water Calculator with Tank & Pump Suggestions</title>
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Water Calculator with Tank &amp; Pump Suggestions</title>
+<style>
     body {
       font-family: Arial, sans-serif;
       max-width: 700px;
@@ -38,41 +40,33 @@
   </style>
 </head>
 <body>
-  <h2>Water Calculator</h2>
-
-  <label for="municipality">Select Your Municipality:</label>
-  <select id="municipality">
-    <option value="">-- Choose Municipality --</option>
-  </select>
-
-  <label for="monthlyCost">Average Monthly Water Bill (Rands):</label>
-  <input type="number" id="monthlyCost" placeholder="e.g. 300" />
-
-  <label for="backupDays">Number of Days for Backup Water:</label>
-  <input type="number" id="backupDays" placeholder="e.g. 3" />
-
-  <button onclick="calculateWater()">Calculate</button>
-
-  <div id="result" class="result" style="display: none;"></div>
-
-  <label for="tankSelect" style="display:none;" id="tankLabel">Select a JoJo Tank:</label>
-  <select id="tankSelect" style="display:none;"></select>
-
-  <div id="pumpRecommendations" class="result" style="display:none;"></div>
-
-  <script>
+<h2>Water Calculator</h2>
+<label for="municipality">Select Your Municipality:</label>
+<select id="municipality">
+<option value="">-- Choose Municipality --</option>
+</select>
+<label for="monthlyCost">Average Monthly Water Bill (Rands):</label>
+<input id="monthlyCost" placeholder="e.g. 300" type="number"/>
+<label for="backupDays">Number of Days for Backup Water:</label>
+<input id="backupDays" placeholder="e.g. 3" type="number"/>
+<button onclick="calculateWater()">Calculate</button>
+<div class="result" id="result" style="display: none;"></div>
+<label for="tankSelect" id="tankLabel" style="display:none;">Select a JoJo Tank:</label>
+<select id="tankSelect" style="display:none;"></select>
+<div class="result" id="pumpRecommendations" style="display:none;"></div>
+<script>
     const jojoTanks = [
-      { size: 260, label: "260L - Emergency/Garden Use" },
-      { size: 525, label: "525L - Small Household/Garden Use" },
-      { size: 750, label: "750L - Basic Backup" },
-      { size: 1000, label: "1000L - Small Family Daily Use" },
-      { size: 1500, label: "1500L - Moderate Daily Use" },
-      { size: 2200, label: "2200L - Backup for 2–3 People" },
-      { size: 2500, label: "2500L - Popular Rainwater Harvesting" },
-      { size: 5000, label: "5000L - Full Household Backup" },
-      { size: 10000, label: "10000L - Large Families/Farm Use" },
-      { size: 15000, label: "15000L - Industrial Use" },
-      { size: 20000, label: "20000L - Large Scale Storage" }
+      { size: 260, label: "260L - Emergency/Garden Use", diameter: 670, height: 940 },
+      { size: 525, label: "525L - Small Household/Garden Use", diameter: 840, height: 1080 },
+      { size: 750, label: "750L - Basic Backup", diameter: 980, height: 1200 },
+      { size: 1000, label: "1000L - Small Family Daily Use", diameter: 1110, height: 1300 },
+      { size: 1500, label: "1500L - Moderate Daily Use", diameter: 1410, height: 1200 },
+      { size: 2200, label: "2200L - Backup for 2–3 People", diameter: 1420, height: 1450 },
+      { size: 2500, label: "2500L - Popular Rainwater Harvesting", diameter: 1420, height: 1700 },
+      { size: 5000, label: "5000L - Full Household Backup", diameter: 1900, height: 2200 },
+      { size: 10000, label: "10000L - Large Families/Farm Use", diameter: 2200, height: 2900 },
+      { size: 15000, label: "15000L - Industrial Use", diameter: 2600, height: 3000 },
+      { size: 20000, label: "20000L - Large Scale Storage", diameter: 2800, height: 3200 }
     ];
 
     const municipalities = [
@@ -115,7 +109,7 @@
       jojoTanks.forEach(tank => {
         const option = document.createElement("option");
         option.value = tank.size;
-        option.textContent = `${tank.label}`;
+        option.textContent = `${tank.label} (${tank.diameter}mm Ø x ${tank.height}mm H)`;
         select.appendChild(option);
       });
     }
@@ -143,7 +137,8 @@
         Estimated monthly usage: <strong>${litersPerMonth.toFixed(2)} liters</strong><br>
         Average daily usage: <strong>${dailyUsage.toFixed(2)} liters/day</strong><br>
         Backup required: <strong>${backupLiters.toFixed(2)} liters</strong><br>
-        Suggested JoJo Tank: <strong>${suggestedTank ? suggestedTank.label : "No suitable tank found"}</strong>
+        Suggested JoJo Tank: <strong>${suggestedTank ? suggestedTank.label : "No suitable tank found"}</strong><br>
+        ${suggestedTank ? `Dimensions: <strong>${suggestedTank.diameter}mm Ø x ${suggestedTank.height}mm H</strong>` : ""}
       `;
 
       document.getElementById("tankLabel").style.display = "block";
@@ -178,5 +173,48 @@
       }
     }
   </script>
-</body>
+
+<div id="pump-selection" style="margin-top:20px;">
+<label for="manualPump">Select a Pump:</label>
+<select id="manualPump" onchange="showPumpSpecs(this.value)">
+<option value="">--Choose a pump--</option>
+<option value="0.37kW Basic">0.37kW Basic</option>
+<option value="0.37kW Peripheral">0.37kW Peripheral</option>
+<option value="0.55kW Centrifugal">0.55kW Centrifugal</option>
+<option value="0.6kW Jet">0.6kW Jet</option>
+<option value="0.75kW Centrifugal">0.75kW Centrifugal</option>
+<option value="1.1kW Centrifugal">1.1kW Centrifugal</option>
+<option value="0.75kW VSD">0.75kW VSD</option>
+<option value="0.75kW HVSD">0.75kW HVSD</option>
+<option value="1.5kW HVSD">1.5kW HVSD</option>
+</select>
+<div id="pumpSpecs" style="margin-top:10px; padding:10px; border:1px solid #ccc;"></div>
+</div>
+<script>function showPumpSpecs(pumpName) {
+  const specs = {
+    "0.37kW Basic": {"Flow Range": "5–15 L/min", "Pressure Range": "1–2.3 bar", "Max Head": "30m", "Max Flow": "23 L/min", "Use Case": "Toilet, Tap, Small Irrigation"},
+    "0.37kW Peripheral": {"Flow Range": "10–20 L/min", "Pressure Range": "1–2.4 bar", "Max Head": "38m", "Max Flow": "34 L/min", "Use Case": "Bathrooms, Washing Machine"},
+    "0.55kW Centrifugal": {"Flow Range": "30–80 L/min", "Pressure Range": "1.6–2.3 bar", "Max Head": "26m", "Max Flow": "100 L/min", "Use Case": "Irrigation, Dishwasher"},
+    "0.6kW Jet": {"Flow Range": "10–30 L/min", "Pressure Range": "2–3 bar", "Max Head": "36m", "Max Flow": "40 L/min", "Use Case": "Solar, Low Noise"},
+    "0.75kW Centrifugal": {"Flow Range": "40–80 L/min", "Pressure Range": "1.9–2.8 bar", "Max Head": "32m", "Max Flow": "100 L/min", "Use Case": "Full Household"},
+    "1.1kW Centrifugal": {"Flow Range": "40–90 L/min", "Pressure Range": "2.7–3.5 bar", "Max Head": "44m", "Max Flow": "120 L/min", "Use Case": "Large Household"},
+    "0.75kW VSD": {"Flow Range": "13–40 L/min", "Pressure Range": "2–3.5 bar", "Max Head": "45m", "Max Flow": "66 L/min", "Use Case": "Variable Pressure Needs"},
+    "0.75kW HVSD": {"Flow Range": "28–56 L/min", "Pressure Range": "2–4 bar", "Max Head": "53m", "Max Flow": "75 L/min", "Use Case": "High Pressure Applications"},
+    "1.5kW HVSD": {"Flow Range": "51–120 L/min", "Pressure Range": "2–4.5 bar", "Max Head": "56m", "Max Flow": "150 L/min", "Use Case": "Industrial, Large Scale"},
+  };
+
+  const container = document.getElementById("pumpSpecs");
+  if (pumpName && specs[pumpName]) {
+    const spec = specs[pumpName];
+    container.innerHTML = `<strong>${pumpName}</strong><br>
+      Flow Range: ${spec["Flow Range"]}<br>
+      Pressure Range: ${spec["Pressure Range"]}<br>
+      Max Head: ${spec["Max Head"]}<br>
+      Max Flow: ${spec["Max Flow"]}<br>
+      Use Case: ${spec["Use Case"]}`;
+  } else {
+    container.innerHTML = "";
+  }
+}
+</script></body>
 </html>
