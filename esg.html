@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ESG Water Score</title>
+    <style>
+      :root {
+        --card: #f7fbff;
+        --border: #dbe7ff;
+        --muted: #5a6a85;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 920px;
+        margin: 32px auto;
+        padding: 24px;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 1.6rem;
+      }
+      p.lead {
+        margin: 0 0 16px;
+        color: var(--muted);
+      }
+      .section {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 16px;
+        margin: 16px 0;
+      }
+      .group {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 12px;
+        margin-top: 10px;
+      }
+      .q {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 0;
+        border-bottom: 1px solid #f1f5f9;
+      }
+      .q:last-child {
+        border-bottom: none;
+      }
+      .yn {
+        display: flex;
+        gap: 8px;
+      }
+      .btn {
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        background: #fff;
+        cursor: pointer;
+      }
+      .btn.primary {
+        background: #2563eb;
+        color: #fff;
+        border-color: #1e53c2;
+      }
+      .btn.ghost {
+        background: #fff;
+      }
+      .grid {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: 1fr;
+      }
+      @media (min-width: 900px) {
+        .grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      .kpi {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 10px;
+      }
+      .k {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 10px;
+      }
+      .k .v {
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+      .bar {
+        height: 16px;
+        background: #e5e7eb;
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .bar > div {
+        height: 100%;
+        width: 0%;
+        transition: width 0.4s ease;
+      }
+      .muted {
+        color: #5a6a85;
+        font-size: 0.92rem;
+      }
+      .badge {
+        display: inline-block;
+        background: #eef2ff;
+        color: #3730a3;
+        border: 1px solid #c7d2fe;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 0.8rem;
+      }
+      .rec {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 12px;
+      }
+      a.link {
+        color: #2563eb;
+        text-decoration: none;
+      }
+      a.link:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>🌍 ESG Water Score</h1>
+      <p class="lead">
+        Answer quick Yes/No questions to get your ESG water rating with actions
+        to improve. <a class="link" href="index.html">← Back to menu</a>
+      </p>
+    </header>
+
+    <section class="section">
+      <h2>🧠 Step 1: Answer the questions</h2>
+
+      <div class="grid">
+        <!-- Environmental -->
+        <div class="group">
+          <h3>Environmental</h3>
+          <div class="q">
+            <span>Do you harvest rainwater (tank/diverter)?</span>
+            <div class="yn">
+              <label><input type="radio" name="e1" value="yes" /> Yes</label>
+              <label><input type="radio" name="e1" value="no" /> No</label>
+            </div>
+          </div>
+          <div class="q">
+            <span>Do you reuse greywater (laundry/bath) safely?</span>
+            <div class="yn">
+              <label><input type="radio" name="e2" value="yes" /> Yes</label>
+              <label><input type="radio" name="e2" value="no" /> No</label>
+            </div>
+          </div>
+          <div class="q">
+            <span>Have leaks been checked/fixed in the last 6 months?</span>
+            <div class="yn">
+              <label><input type="radio" name="e3" value="yes" /> Yes</label>
+              <label><input type="radio" name="e3" value="no" /> No</label>
+            </div>
+          </div>
+          <div class="q">
+            <span>Do you use low-flow taps/showerheads or dual-flush?</span>
+            <div class="yn">
+              <label><input type="radio" name="e4" value="yes" /> Yes</label>
+              <label><input type="radio" name="e4" value="no" /> No</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Social -->
+        <div class="group">
+          <h3>Social</h3>
+          <div class="q">
+            <span>Do you keep storage hygienic (tank cleaned yearly)?</span>
+            <div class="yn">
+              <label><input type="radio" name="s1" value="yes" /> Yes</label>
+              <label><input type="radio" name="s1" value="no" /> No</label>
+            </div>
+          </div>
+          <div class="q">
+            <span>Do you share water-saving tips with family/staff?</span>
+            <div class="yn">
+              <label><input type="radio" name="s2" value="yes" /> Yes</label>
+              <label><input type="radio" name="s2" value="no" /> No</label>
+            </div>
+          </div>
+          <div class="q">
+            <span>Are greywater practices safe (no exposure/odour)?</span>
+            <div class="yn">
+              <label><input type="radio" name="s3" value="yes" /> Yes</label>
+              <label><input type="radio" name="s3" value="no" /> No</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Governance -->
+        <div class="group">
+          <h3>Governance</h3>
+          <div class="q">
+            <span>Do you track bills/usage monthly?</span>
+            <div class="yn">
+              <label><input type="radio" name="g1" value="yes" /> Yes</label>
+              <label><input type="radio" name="g1" value="no" /> No</label>
+            </div>
+          </div>
+          <div class="q">
+            <span>Do you set an annual reduction target (e.g. −10%)?</span>
+            <div class="yn">
+              <label><input type="radio" name="g2" value="yes" /> Yes</label>
+              <label><input type="radio" name="g2" value="no" /> No</label>
+            </div>
+          </div>
+          <div class="q">
+            <span
+              >Do you have a basic water policy (responsible
+              use/maintenance)?</span
+            >
+            <div class="yn">
+              <label><input type="radio" name="g3" value="yes" /> Yes</label>
+              <label><input type="radio" name="g3" value="no" /> No</label>
+            </div>
+          </div>
+          <div class="q">
+            <span
+              >Do you act on spikes quickly (leak alerts, notifications)?</span
+            >
+            <div class="yn">
+              <label><input type="radio" name="g4" value="yes" /> Yes</label>
+              <label><input type="radio" name="g4" value="no" /> No</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap">
+        <button id="scoreBtn" class="btn primary">
+          🧮 Calculate ESG Water Score
+        </button>
+        <button id="resetBtn" class="btn">↺ Reset</button>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>📊 Step 2: Your Rating</h2>
+      <div class="kpi">
+        <div class="k">
+          <div class="t muted">Overall</div>
+          <div id="vOverall" class="v">—</div>
+        </div>
+        <div class="k">
+          <div class="t muted">Environmental</div>
+          <div id="vE" class="v">—</div>
+        </div>
+        <div class="k">
+          <div class="t muted">Social</div>
+          <div id="vS" class="v">—</div>
+        </div>
+        <div class="k">
+          <div class="t muted">Governance</div>
+          <div id="vG" class="v">—</div>
+        </div>
+      </div>
+      <div style="margin-top: 10px">
+        <div class="bar"><div id="barFill"></div></div>
+        <div class="muted" id="labelRating" style="margin-top: 6px">—</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>💡 Step 3: Actions to Improve</h2>
+      <div id="actions" class="rec">
+        Answer the questions to see tailored recommendations.
+      </div>
+    </section>
+
+    <script>
+      const $ = (s) => document.querySelector(s);
+      const $$ = (s) => Array.from(document.querySelectorAll(s));
+
+      // weights (each "yes" is worth points, normalized to 100 overall)
+      const WEIGHTS = {
+        E: { e1: 12, e2: 12, e3: 10, e4: 6 }, // 40 total
+        S: { s1: 8, s2: 6, s3: 6 }, // 20 total
+        G: { g1: 14, g2: 10, g3: 8, g4: 8 }, // 40 total
+      }; // sum = 100
+
+      function getAnswers() {
+        const getVal = (n) =>
+          ($(`input[name="${n}"]:checked`) || {}).value || null;
+        const keys = Object.keys(WEIGHTS.E).concat(
+          Object.keys(WEIGHTS.S),
+          Object.keys(WEIGHTS.G)
+        );
+        const a = {};
+        keys.forEach((k) => (a[k] = getVal(k))); // 'yes' | 'no' | null
+        return a;
+      }
+
+      function score(answers) {
+        let e = 0,
+          s = 0,
+          g = 0;
+        Object.entries(WEIGHTS.E).forEach(([k, w]) => {
+          if (answers[k] === "yes") e += w;
+        });
+        Object.entries(WEIGHTS.S).forEach(([k, w]) => {
+          if (answers[k] === "yes") s += w;
+        });
+        Object.entries(WEIGHTS.G).forEach(([k, w]) => {
+          if (answers[k] === "yes") g += w;
+        });
+        const total = Math.round(e + s + g);
+        return { E: Math.round(e), S: Math.round(s), G: Math.round(g), total };
+      }
+
+      function ratingLabel(n) {
+        if (n >= 80)
+          return { label: "⭐ Excellent (Leader)", color: "#16a34a" };
+        if (n >= 50)
+          return { label: "✅ Good (On the right track)", color: "#22c55e" };
+        if (n >= 25) return { label: "⚠ Needs Improvement", color: "#f59e0b" };
+        return { label: "❌ High Risk", color: "#ef4444" };
+      }
+
+      function render(scores, answers) {
+        // values
+        $("#vOverall").textContent = `${scores.total}/100`;
+        $("#vE").textContent = `${scores.E}/40`;
+        $("#vS").textContent = `${scores.S}/20`;
+        $("#vG").textContent = `${scores.G}/40`;
+
+        // bar
+        const { label, color } = ratingLabel(scores.total);
+        const fill = $("#barFill");
+        fill.style.width = `${scores.total}%`;
+        fill.style.background = color;
+        $("#labelRating").textContent = label;
+
+        // actions
+        const a = [];
+        // Environmental
+        if (answers.e1 !== "yes")
+          a.push(
+            "Install a rainwater diverter and a compact tank (e.g., 525–1000L) to supply garden or toilets."
+          );
+        if (answers.e2 !== "yes")
+          a.push(
+            "Add a greywater diverter (bath/laundry) with lint/mesh filter before irrigation or toilet reuse."
+          );
+        if (answers.e3 !== "yes")
+          a.push(
+            "Do a 15-minute meter test (no taps on) to detect silent leaks; repair promptly."
+          );
+        if (answers.e4 !== "yes")
+          a.push(
+            "Fit low-flow aerators and dual-flush kits to cut usage by 20–40%."
+          );
+
+        // Social
+        if (answers.s1 !== "yes")
+          a.push(
+            "Clean tanks yearly; use sealed lids and first-flush to keep water hygienic."
+          );
+        if (answers.s2 !== "yes")
+          a.push(
+            "Share water-saving tips at home/work; set simple “close taps, short showers” reminders."
+          );
+        if (answers.s3 !== "yes")
+          a.push(
+            "Ensure greywater is dispersed below surface; avoid pooling/odour and use mild detergents."
+          );
+
+        // Governance
+        if (answers.g1 !== "yes")
+          a.push(
+            "Start monthly tracking of bills and volume to spot spikes early."
+          );
+        if (answers.g2 !== "yes")
+          a.push(
+            "Set a yearly reduction target (e.g., −10%) and review progress quarterly."
+          );
+        if (answers.g3 !== "yes")
+          a.push(
+            "Adopt a basic water policy: leak response, fixture maintenance, responsible irrigation."
+          );
+        if (answers.g4 !== "yes")
+          a.push(
+            "Use a smart meter/leak monitor with notifications to act on spikes quickly."
+          );
+
+        // cross-link to your tools
+        const links = [];
+        if (answers.e1 !== "yes" || answers.e2 !== "yes")
+          links.push(
+            `<a class="link" href="reuse.html">Explore Reuse & Efficiency</a>`
+          );
+        if (answers.g1 !== "yes" || answers.g2 !== "yes")
+          links.push(
+            `<a class="link" href="manage.html">Start the Bill Tracker</a>`
+          );
+        if (answers.e1 !== "yes" || answers.e3 !== "yes")
+          links.push(
+            `<a class="link" href="backup.html?mode=backup">Size a Backup Tank</a>`
+          );
+
+        $("#actions").innerHTML = `
+        <div><strong>Recommended actions</strong></div>
+        <ul style="margin:8px 0 0 18px;">${a
+          .map((x) => `<li>${x}</li>`)
+          .join("")}</ul>
+        <div style="margin-top:10px;">${links.join(" • ")}</div>
+      `;
+      }
+
+      function validateComplete() {
+        const missing = $$('input[type="radio"]').reduce(
+          (acc, i) => (i.checked ? acc : acc),
+          0
+        );
+        // not strict—allow partial, but encourage
+        const all = getAnswers();
+        const answered = Object.values(all).filter(
+          (v) => v === "yes" || v === "no"
+        ).length;
+        if (answered < 4) {
+          alert(
+            "Please answer a few more questions to get a meaningful score."
+          );
+        }
+      }
+
+      function resetAll() {
+        $$('input[type="radio"]').forEach((i) => (i.checked = false));
+        $("#vOverall").textContent = "—";
+        $("#vE").textContent = "—";
+        $("#vS").textContent = "—";
+        $("#vG").textContent = "—";
+        $("#barFill").style.width = "0%";
+        $("#labelRating").textContent = "—";
+        $("#actions").textContent =
+          "Answer the questions to see tailored recommendations.";
+        try {
+          localStorage.removeItem("esg_water_score");
+        } catch {}
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      // events
+      document.getElementById("scoreBtn").addEventListener("click", () => {
+        const answers = getAnswers();
+        validateComplete();
+        const scores = score(answers);
+        render(scores, answers);
+        try {
+          localStorage.setItem(
+            "esg_water_score",
+            JSON.stringify({ answers, scores })
+          );
+        } catch {}
+        window.scrollTo({
+          top: document.body.scrollHeight,
+          behavior: "smooth",
+        });
+      });
+      document.getElementById("resetBtn").addEventListener("click", resetAll);
+
+      // restore last result
+      (function restore() {
+        try {
+          const saved = JSON.parse(
+            localStorage.getItem("esg_water_score") || "null"
+          );
+          if (!saved) return;
+          Object.entries(saved.answers || {}).forEach(([k, v]) => {
+            const el = document.querySelector(
+              `input[name="${k}"][value="${v}"]`
+            );
+            if (el) el.checked = true;
+          });
+          render(saved.scores, saved.answers);
+        } catch {}
+      })();
+    </script>
+  </body>
+</html>

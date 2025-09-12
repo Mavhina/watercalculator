@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Help Me Decide</title>
+    <style>
+      :root {
+        --card: #f7fbff;
+        --border: #dbe7ff;
+        --muted: #5a6a85;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 760px;
+        margin: 32px auto;
+        padding: 24px;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 1.6rem;
+      }
+      p.lead {
+        margin: 0 0 16px;
+        color: var(--muted);
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 18px;
+      }
+      .q {
+        margin: 12px 0;
+      }
+      .btn-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+      }
+      .btn {
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        background: #fff;
+        cursor: pointer;
+        font-size: 1rem;
+      }
+      .btn.primary {
+        background: #2563eb;
+        color: #fff;
+        border-color: #1e53c2;
+      }
+      .btn.ghost {
+        background: #fff;
+        color: #111;
+      }
+      .opts {
+        display: grid;
+        gap: 8px;
+        grid-template-columns: 1fr;
+        margin-top: 10px;
+      }
+      .opt {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 10px;
+        cursor: pointer;
+      }
+      .muted {
+        color: #5a6a85;
+        font-size: 0.92rem;
+      }
+      .badge {
+        display: inline-block;
+        background: #eef2ff;
+        color: #3730a3;
+        border: 1px solid #c7d2fe;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 0.8rem;
+      }
+      .actions a {
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>💧 “Help Me Decide”</h1>
+      <p class="lead">
+        Answer a few quick questions. If something fits, we’ll take you straight
+        to the right tool.
+      </p>
+      <p class="muted"><a href="index.html">← Back to menu</a></p>
+    </header>
+
+    <section id="stage" class="card">
+      <!-- dynamic content goes here -->
+    </section>
+
+    <script>
+      // Simple state (kept in memory; optionally persisted if you want)
+      const state = { q1: null, q2: null, q3: null, prop: null };
+
+      // Utilities
+      const $ = (sel) => document.querySelector(sel);
+      function go(url) {
+        window.location.href = url;
+      }
+
+      // Screens (one at a time)
+      function renderQ1() {
+        $("#stage").innerHTML = `
+        <div class="q">
+          <div class="badge">Step 1 of 4</div>
+          <h2 style="margin:6px 0 4px;">🧠 Q1: Have you recently experienced water cuts or outages at your home or business?</h2>
+          <div class="opts">
+            <button class="opt" data-v="yes-regular">Yes, regularly</button>
+            <button class="opt" data-v="sometimes">Sometimes</button>
+            <button class="opt" data-v="no">Not really</button>
+          </div>
+          <div class="btn-row"><button class="btn ghost" onclick="go('index.html')">← Cancel</button></div>
+        </div>`;
+        $("#stage")
+          .querySelectorAll(".opt")
+          .forEach((b) => {
+            b.addEventListener("click", () => {
+              const v = b.dataset.v;
+              state.q1 = v;
+              // If yes/sometimes -> redirect to backup calculator
+              if (v === "yes-regular" || v === "sometimes") {
+                go("backup.html?mode=backup");
+              } else {
+                renderQ2();
+              }
+            });
+          });
+      }
+
+      function renderQ2() {
+        $("#stage").innerHTML = `
+        <div class="q">
+          <div class="badge">Step 2 of 4</div>
+          <h2 style="margin:6px 0 4px;">💰 Q2: Are you concerned about your water bill being too high or unpredictable?</h2>
+          <div class="opts">
+            <button class="opt" data-v="yes">Yes</button>
+            <button class="opt" data-v="little">A little</button>
+            <button class="opt" data-v="no">Not really</button>
+          </div>
+          <div class="btn-row">
+            <button class="btn" onclick="renderQ1()">← Back</button>
+          </div>
+        </div>`;
+        $("#stage")
+          .querySelectorAll(".opt")
+          .forEach((b) => {
+            b.addEventListener("click", () => {
+              const v = b.dataset.v;
+              state.q2 = v;
+              // If yes/a little -> redirect to bill tracker
+              if (v === "yes" || v === "little") {
+                go("manage.html");
+              } else {
+                renderQ3();
+              }
+            });
+          });
+      }
+
+      function renderQ3() {
+        $("#stage").innerHTML = `
+        <div class="q">
+          <div class="badge">Step 3 of 4</div>
+          <h2 style="margin:6px 0 4px;">🌱 Q3: Are you looking for ways to save water or reuse it (e.g., garden, flushing, washing)?</h2>
+          <div class="opts">
+            <button class="opt" data-v="yes">Yes, definitely</button>
+            <button class="opt" data-v="maybe">Maybe, not sure how</button>
+            <button class="opt" data-v="no">No, not interested</button>
+          </div>
+          <div class="btn-row">
+            <button class="btn" onclick="renderQ2()">← Back</button>
+          </div>
+        </div>`;
+        $("#stage")
+          .querySelectorAll(".opt")
+          .forEach((b) => {
+            b.addEventListener("click", () => {
+              const v = b.dataset.v;
+              state.q3 = v;
+              // If yes or maybe -> redirect to reuse/efficiency
+              if (v === "yes" || v === "maybe") {
+                go("reuse.html");
+              } else {
+                renderQ4();
+              }
+            });
+          });
+      }
+
+      function renderQ4() {
+        $("#stage").innerHTML = `
+        <div class="q">
+          <div class="badge">Step 4 of 4</div>
+          <h2 style="margin:6px 0 4px;">🏠 Q4: What type of property do you want to improve?</h2>
+          <div class="opts">
+            <button class="opt" data-v="home">Home / Apartment</button>
+            <button class="opt" data-v="smallbiz">Small business</button>
+            <button class="opt" data-v="sme">Larger commercial / SME</button>
+            <button class="opt" data-v="other">Other</button>
+          </div>
+          <div class="btn-row">
+            <button class="btn" onclick="renderQ3()">← Back</button>
+          </div>
+        </div>`;
+        $("#stage")
+          .querySelectorAll(".opt")
+          .forEach((b) => {
+            b.addEventListener("click", () => {
+              state.prop = b.dataset.v;
+              // No earlier "yes" matched; show a friendly all-options summary
+              renderResult();
+            });
+          });
+      }
+
+      function renderResult() {
+        // Friendly recommendation (since none of the earlier triggers redirected)
+        $("#stage").innerHTML = `
+        <div class="q">
+          <div class="badge">Result</div>
+          <h2 style="margin:6px 0 4px;">✅ Here's What We Recommend for You</h2>
+          <p class="muted" style="margin:0 0 10px;">
+            You can use one or all of these tools to improve your water situation.
+          </p>
+          <div class="card" style="background:#fff; margin-top:8px;">
+            <h3>🔹 Backup Water Supply Solutions</h3>
+            <p class="muted">For outages and water cuts</p>
+            <div class="btn-row actions"><a class="btn primary" href="backup.html?mode=backup">→ Use Backup Calculator</a></div>
+          </div>
+
+          <div class="card" style="background:#fff; margin-top:10px;">
+            <h3>🔹 Water Usage Tracking</h3>
+            <p class="muted">Monitor and reduce your monthly water bills</p>
+            <div class="btn-row actions"><a class="btn primary" href="manage.html">→ Start Bill Tracker</a></div>
+          </div>
+
+          <div class="card" style="background:#fff; margin-top:10px;">
+            <h3>🔹 Water Reuse Solutions</h3>
+            <p class="muted">Reuse water for your garden or toilet flushing</p>
+            <div class="btn-row actions"><a class="btn primary" href="reuse.html">→ Explore Efficiency Options</a></div>
+          </div>
+
+          <div class="btn-row" style="margin-top:14px;">
+            <a class="btn" href="index.html">🔁 Not what you expected? Go back & choose a path manually</a>
+          </div>
+        </div>`;
+        try {
+          localStorage.setItem("decide_answers", JSON.stringify(state));
+        } catch {}
+      }
+
+      // Boot
+      renderQ1();
+    </script>
+  </body>
+</html>

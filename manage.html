@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Water Bill Tracker</title>
+    <style>
+      :root {
+        --card: #f7fbff;
+        --border: #dbe7ff;
+        --muted: #5a6a85;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 980px;
+        margin: 32px auto;
+        padding: 24px;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 1.6rem;
+      }
+      p.lead {
+        margin: 0 0 16px;
+        color: var(--muted);
+      }
+      .grid {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: 1fr;
+      }
+      @media (min-width: 960px) {
+        .grid {
+          grid-template-columns: 1.05fr 0.95fr;
+        }
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 16px;
+      }
+      label {
+        display: block;
+        margin: 10px 0 6px;
+      }
+      input[type="text"],
+      input[type="number"],
+      input[type="month"],
+      select {
+        width: 100%;
+        padding: 8px 10px;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .row > * {
+        flex: 1;
+        min-width: 180px;
+      }
+      .btn {
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        background: white;
+        cursor: pointer;
+      }
+      .btn.primary {
+        background: #2563eb;
+        color: #fff;
+        border-color: #1e53c2;
+      }
+      .btn.danger {
+        background: #ef4444;
+        color: #fff;
+        border-color: #dc2626;
+      }
+      .muted {
+        color: #5a6a85;
+        font-size: 0.92rem;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        border-bottom: 1px solid #e5e7eb;
+        padding: 8px;
+        text-align: left;
+      }
+      .kpi {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 10px;
+        margin-top: 10px;
+      }
+      .k {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 10px;
+      }
+      .k .v {
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+      .alert {
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        color: #7c2d12;
+        border-radius: 10px;
+        padding: 10px;
+        margin-top: 10px;
+      }
+      .ok {
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        color: #14532d;
+        border-radius: 10px;
+        padding: 10px;
+        margin-top: 10px;
+      }
+      canvas {
+        width: 100%;
+        height: 280px;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        background: #fff;
+      }
+      .guide {
+        background: #fafafa;
+        border: 1px dashed #e5e7eb;
+        border-radius: 10px;
+        padding: 10px;
+        margin-top: 10px;
+      }
+      a.link {
+        color: #2563eb;
+        text-decoration: none;
+      }
+      a.link:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>💧 Water Bill Tracker</h1>
+      <p class="lead">
+        Log your monthly bills and usage, track trends, and get smart
+        suggestions to reduce costs.
+        <a class="link" href="index.html">← Back to menu</a>
+      </p>
+    </header>
+
+    <div class="grid">
+      <!-- Left: Input + Table -->
+      <section class="card">
+        <h2>🖼️ Step 1: Add Monthly Bill</h2>
+        <div class="row">
+          <div>
+            <label>💰 Bill amount (R)</label>
+            <input
+              id="amount"
+              type="number"
+              min="0"
+              step="0.01"
+              placeholder="e.g. 325"
+            />
+          </div>
+          <div>
+            <label>📆 Billing month</label>
+            <!-- use <input type="month"> for simple month/year -->
+            <input id="month" type="month" />
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label>🔢 Volume</label>
+            <input
+              id="volume"
+              type="number"
+              min="0"
+              step="0.01"
+              placeholder="optional"
+            />
+          </div>
+          <div>
+            <label>Units</label>
+            <select id="volUnits">
+              <option value="kl">kL</option>
+              <option value="l">L</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label>🎯 Monthly target (R)</label>
+            <input
+              id="target"
+              type="number"
+              min="0"
+              step="0.01"
+              placeholder="optional e.g. 250"
+            />
+            <p class="muted" style="margin: 6px 0 0">
+              Used for Goal vs Actual widget. Saved for re-use.
+            </p>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top: 10px">
+          <button id="addBtn" class="btn primary">✅ Add Bill</button>
+          <button id="clearBtn" class="btn danger">🗑️ Clear All</button>
+          <button id="csvBtn" class="btn">📤 Export CSV</button>
+          <button id="icsBtn" class="btn">🗓️ Monthly Reminder (.ics)</button>
+        </div>
+
+        <h3 style="margin-top: 18px">🧾 Entries</h3>
+        <div class="muted">
+          After 2–3 entries, insights & charts become more meaningful.
+        </div>
+        <table id="tbl" style="margin-top: 8px">
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Amount (R)</th>
+              <th>Volume (kL)</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+      <!-- Right: Insights -->
+      <section class="card">
+        <h2>📊 Step 2: Dashboard / Insights</h2>
+
+        <div class="kpi">
+          <div class="k">
+            <div class="t muted">Last Bill</div>
+            <div id="kLast" class="v">—</div>
+          </div>
+          <div class="k">
+            <div class="t muted">3-Month Avg</div>
+            <div id="kAvg3" class="v">—</div>
+          </div>
+          <div class="k">
+            <div class="t muted">Change vs Prev</div>
+            <div id="kDelta" class="v">—</div>
+          </div>
+          <div class="k">
+            <div class="t muted">Goal vs Actual</div>
+            <div id="kGoal" class="v">—</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 12px">
+          <canvas id="chart" width="800" height="280"></canvas>
+        </div>
+
+        <div id="alertBox" class="alert" style="display: none"></div>
+        <div id="okBox" class="ok" style="display: none"></div>
+
+        <h2 style="margin-top: 16px">💡 Step 3: Smart Suggestions</h2>
+        <div id="tips" class="guide">
+          Add a few months to unlock personalised tips.
+        </div>
+      </section>
+    </div>
+
+    <script>
+      // ---------- Storage ----------
+      const KEY = "water_bills_v1";
+      const KEY_TARGET = "water_bills_target";
+
+      function loadRows() {
+        try {
+          return JSON.parse(localStorage.getItem(KEY) || "[]");
+        } catch {
+          return [];
+        }
+      }
+      function saveRows(rows) {
+        localStorage.setItem(KEY, JSON.stringify(rows));
+      }
+
+      function saveTarget(v) {
+        if (isFinite(v) && v >= 0) localStorage.setItem(KEY_TARGET, String(v));
+      }
+      function loadTarget() {
+        const v = parseFloat(localStorage.getItem(KEY_TARGET));
+        return isFinite(v) ? v : null;
+      }
+
+      // ---------- DOM helpers ----------
+      const $ = (sel) => document.querySelector(sel);
+      const tbody = $("#tbl tbody");
+
+      // ---------- Rendering ----------
+      function renderTable(rows) {
+        tbody.innerHTML = rows
+          .map(
+            (r, idx) => `
+        <tr>
+          <td>${r.month}</td>
+          <td>R${r.amount.toFixed(2)}</td>
+          <td>${(r.kl ?? null) != null ? r.kl.toFixed(2) : "—"}</td>
+          <td><button class="btn" data-del="${idx}">Delete</button></td>
+        </tr>
+      `
+          )
+          .join("");
+      }
+
+      function avg(arr) {
+        return arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
+      }
+      function pct(a, b) {
+        return b > 0 ? ((a - b) / b) * 100 : null;
+      }
+
+      function renderKPIs(rows) {
+        const last = rows[rows.length - 1];
+        $("#kLast").textContent = last ? `R${last.amount.toFixed(2)}` : "—";
+
+        const last3 = rows.slice(-3);
+        const avg3 = avg(last3.map((x) => x.amount));
+        $("#kAvg3").textContent = last3.length ? `R${avg3.toFixed(2)}` : "—";
+
+        const prev = rows[rows.length - 2];
+        const d = last && prev ? pct(last.amount, prev.amount) : null;
+        $("#kDelta").textContent =
+          d == null ? "—" : `${d >= 0 ? "+" : ""}${d.toFixed(1)}%`;
+
+        const target = loadTarget();
+        $("#kGoal").textContent =
+          target != null && last
+            ? `R${target.toFixed(0)} vs R${last.amount.toFixed(0)}`
+            : "—";
+      }
+
+      // ---------- Alerts & Tips ----------
+      function renderAlertsAndTips(rows) {
+        const alertBox = $("#alertBox");
+        const okBox = $("#okBox");
+        const tips = $("#tips");
+        alertBox.style.display = "none";
+        okBox.style.display = "none";
+
+        if (rows.length < 2) {
+          tips.innerHTML = `💡 Log at least two months to unlock personalised insights. 
+        Meanwhile: check for silent leaks, fit tap/shower aerators, and set a monthly target.`;
+          return;
+        }
+
+        const last = rows[rows.length - 1];
+        const prev = rows[rows.length - 2];
+        const change = pct(last.amount, prev.amount); // %
+        let tipsOut = [];
+
+        if (change != null && change >= 10) {
+          alertBox.style.display = "block";
+          alertBox.innerHTML = `
+          <strong>Heads-up:</strong> Your bill is <strong>${change.toFixed(
+            1
+          )}%</strong> higher than last month.<br>
+          ✅ Tip: Drop food colouring in the cistern; if the bowl colours without flushing, you have a leak.
+        `;
+          tipsOut.push(
+            "Consider a dual-flush retrofit (±R350–R900) and low-flow aerators (±R200–R600)."
+          );
+        } else if (change != null && change <= -10) {
+          okBox.style.display = "block";
+          okBox.textContent = `Nice! Your bill dropped ${Math.abs(
+            change
+          ).toFixed(1)}% vs last month. Keep it up.`;
+          tipsOut.push(
+            "Maintain gains: review daily routines, keep aerators clean, and monitor for new leaks monthly."
+          );
+        }
+
+        // volume-based ideas
+        const vols = rows.map((r) => r.kl).filter((v) => v != null);
+        if (vols.length >= 2) {
+          const lastKL = rows[rows.length - 1].kl;
+          const prevKL = rows[rows.length - 2].kl;
+          if (lastKL != null && prevKL != null && lastKL - prevKL > 2) {
+            tipsOut.push(
+              "Usage jumped >2 kL: check irrigation schedules and hosepipe use."
+            );
+          }
+        }
+
+        // goal vs actual
+        const target = loadTarget();
+        if (target != null && last) {
+          if (last.amount > target) {
+            tipsOut.push(`Goal miss: Target R${target.toFixed(
+              0
+            )}, Actual R${last.amount.toFixed(0)}. 
+          Try a smart water meter/leak monitor (±R1,200–R3,500) to catch spikes fast.`);
+          } else {
+            tipsOut.push(
+              "Goal met! Consider lowering your target slightly next month to keep momentum."
+            );
+          }
+        }
+
+        // final recommendations block
+        const recs = [
+          { name: "Dual-flush retrofit kit", price: "~R350–R900" },
+          { name: "Low-flow tap/shower aerators", price: "~R200–R600" },
+          { name: "Smart water meter / leak monitor", price: "~R1,200–R3,500" },
+        ];
+        tips.innerHTML = `
+        <strong>Suggestions</strong>
+        <ul style="margin:8px 0 0 18px;">
+          ${
+            tipsOut.map((x) => `<li>${x}</li>`).join("") ||
+            "<li>Keep logging bills; trends will appear after a few months.</li>"
+          }
+        </ul>
+        <div style="margin-top:8px;">
+          <strong>Product ideas:</strong>
+          ${recs
+            .map(
+              (r) =>
+                `<span style="display:inline-block;margin:4px 6px 0 0;padding:4px 8px;border:1px solid #e5e7eb;border-radius:999px;background:#fff;">${r.name} <span class="muted">${r.price}</span></span>`
+            )
+            .join("")}
+        </div>
+      `;
+      }
+
+      // ---------- Tiny chart (canvas, no libs) ----------
+      function drawChart(rows) {
+        const c = document.getElementById("chart");
+        const ctx = c.getContext("2d");
+        // clear
+        ctx.clearRect(0, 0, c.width, c.height);
+
+        if (rows.length === 0) {
+          ctx.fillStyle = "#6b7280";
+          ctx.fillText("Add bills to see trends…", 16, 24);
+          return;
+        }
+
+        // Prepare data
+        const labels = rows.map((r) => r.month);
+        const amounts = rows.map((r) => r.amount);
+        const volumes = rows.map((r) => r.kl ?? null);
+
+        // Scales
+        const pad = 40;
+        const W = c.width,
+          H = c.height;
+        const innerW = W - pad * 2,
+          innerH = H - pad * 2;
+
+        const maxAmount = Math.max(...amounts, 1);
+        const maxVolume = Math.max(...volumes.filter((v) => v != null), 1);
+
+        // axes
+        ctx.strokeStyle = "#e5e7eb";
+        ctx.beginPath();
+        ctx.moveTo(pad, pad);
+        ctx.lineTo(pad, H - pad);
+        ctx.lineTo(W - pad, H - pad);
+        ctx.stroke();
+
+        // Bars for amount (R)
+        const n = rows.length;
+        const barW = (innerW / Math.max(n, 1)) * 0.5;
+        ctx.fillStyle = "#bfdbfe";
+        amounts.forEach((amt, i) => {
+          const x = pad + i * (innerW / n) + 6;
+          const h = (amt / maxAmount) * innerH;
+          ctx.fillRect(x, H - pad - h, barW, h);
+        });
+
+        // Line for volume (kL) if we have any
+        if (volumes.some((v) => v != null)) {
+          ctx.strokeStyle = "#86efac";
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          volumes.forEach((v, i) => {
+            if (v == null) return;
+            const x = pad + i * (innerW / n) + barW + 16;
+            const y = H - pad - (v / maxVolume) * innerH;
+            if (i === 0 || volumes.slice(0, i).every((x) => x == null))
+              ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+            // point
+            ctx.fillStyle = "#10b981";
+            ctx.beginPath();
+            ctx.arc(x, y, 3, 0, Math.PI * 2);
+            ctx.fill();
+          });
+          ctx.stroke();
+        }
+
+        // Labels (x)
+        ctx.fillStyle = "#6b7280";
+        ctx.font = "12px Arial";
+        labels.forEach((lab, i) => {
+          const x = pad + i * (innerW / n) + 6;
+          ctx.fillText(lab, x, H - pad + 14);
+        });
+
+        // Legends
+        ctx.fillStyle = "#111827";
+        ctx.fillText("Amount (R) – bars", pad, pad - 12);
+        ctx.fillText("Volume (kL) – line", pad + 140, pad - 12);
+      }
+
+      // ---------- CSV & ICS ----------
+      function toCSV(rows) {
+        const header = ["month", "amount_R", "volume_kL"];
+        const lines = [header.join(",")];
+        rows.forEach((r) =>
+          lines.push(
+            [
+              r.month,
+              r.amount.toFixed(2),
+              r.kl != null ? r.kl.toFixed(2) : "",
+            ].join(",")
+          )
+        );
+        return lines.join("\n");
+      }
+
+      function download(filename, content, type = "text/plain") {
+        const blob = new Blob([content], { type });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => {
+          URL.revokeObjectURL(url);
+          a.remove();
+        }, 100);
+      }
+
+      function icsMonthlyReminder() {
+        // Simple recurring monthly reminder on the 3rd at 9:00 (local)
+        const uid = "water-bill-reminder-" + Date.now() + "@local";
+        const dt = new Date();
+        dt.setDate(3);
+        dt.setHours(9, 0, 0, 0);
+        const y = dt.getFullYear();
+        const m = String(dt.getMonth() + 1).padStart(2, "0");
+        const d = String(dt.getDate()).padStart(2, "0");
+        const hh = String(dt.getHours()).padStart(2, "0");
+        const mm = String(dt.getMinutes()).padStart(2, "0");
+        const dtStart = `${y}${m}${d}T${hh}${mm}00`;
+
+        const ics = [
+          "BEGIN:VCALENDAR",
+          "VERSION:2.0",
+          "PRODID:-//Water Bill Tracker//EN",
+          "BEGIN:VEVENT",
+          `UID:${uid}`,
+          `DTSTART:${dtStart}`,
+          "RRULE:FREQ=MONTHLY",
+          "SUMMARY:Update your water bill",
+          "DESCRIPTION:Time to add last month\\, check trends\\, and review tips.",
+          "END:VEVENT",
+          "END:VCALENDAR",
+        ].join("\r\n");
+        download("water-bill-monthly-reminder.ics", ics, "text/calendar");
+      }
+
+      // ---------- Init / Events ----------
+      function normalizeMonth(value) {
+        // input type="month" yields "YYYY-MM"
+        if (!value) return null;
+        const [Y, M] = value.split("-");
+        const date = new Date(Number(Y), Number(M) - 1, 1);
+        // Friendly label e.g., "Aug 2025"
+        return date.toLocaleString(undefined, {
+          month: "short",
+          year: "numeric",
+        });
+      }
+
+      function addEntry() {
+        const amt = parseFloat($("#amount").value);
+        const monthRaw = $("#month").value;
+        const vol = $("#volume").value ? parseFloat($("#volume").value) : null;
+        const units = $("#volUnits").value;
+
+        if (!isFinite(amt) || amt <= 0) {
+          alert("Enter a valid bill amount.");
+          return;
+        }
+        const monthLabel = normalizeMonth(monthRaw);
+        if (!monthLabel) {
+          alert("Select a billing month.");
+          return;
+        }
+
+        let kl = null;
+        if (vol != null && isFinite(vol) && vol >= 0) {
+          kl = units === "l" ? vol / 1000 : vol;
+        }
+
+        const rows = loadRows();
+        // prevent duplicates by month label
+        const existingIdx = rows.findIndex((r) => r.month === monthLabel);
+        const row = { month: monthLabel, amount: amt, kl };
+        if (existingIdx >= 0) rows[existingIdx] = row;
+        else rows.push(row);
+
+        // sort by date (reparse month)
+        rows.sort((a, b) => new Date(a.month) - new Date(b.month)); // locale parse fallback
+        saveRows(rows);
+
+        const tgt = parseFloat($("#target").value);
+        if (isFinite(tgt) && tgt >= 0) saveTarget(tgt);
+
+        refresh();
+        // Clear quick inputs (keep target)
+        $("#amount").value = "";
+        $("#volume").value = "";
+      }
+
+      function deleteEntry(idx) {
+        const rows = loadRows();
+        rows.splice(idx, 1);
+        saveRows(rows);
+        refresh();
+      }
+
+      function clearAll() {
+        if (!confirm("Delete all water bill entries?")) return;
+        localStorage.removeItem(KEY);
+        refresh();
+      }
+
+      function refresh() {
+        const rows = loadRows();
+        renderTable(rows);
+        renderKPIs(rows);
+        renderAlertsAndTips(rows);
+        drawChart(rows);
+
+        // wire delete buttons
+        tbody.querySelectorAll("button[data-del]").forEach((btn) => {
+          btn.addEventListener("click", () =>
+            deleteEntry(parseInt(btn.dataset.del))
+          );
+        });
+
+        const tgt = loadTarget();
+        if (tgt != null) $("#target").value = tgt;
+      }
+
+      // events
+      document.getElementById("addBtn").addEventListener("click", addEntry);
+      document.getElementById("clearBtn").addEventListener("click", clearAll);
+      document.getElementById("csvBtn").addEventListener("click", () => {
+        const csv = toCSV(loadRows());
+        download("water-bills.csv", csv, "text/csv");
+      });
+      document
+        .getElementById("icsBtn")
+        .addEventListener("click", icsMonthlyReminder);
+      document.getElementById("target").addEventListener("change", (e) => {
+        const v = parseFloat(e.target.value);
+        if (isFinite(v) && v >= 0) saveTarget(v);
+        renderKPIs(loadRows());
+        renderAlertsAndTips(loadRows());
+      });
+
+      // kick
+      refresh();
+    </script>
+  </body>
+</html>

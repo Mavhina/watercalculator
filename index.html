@@ -3,353 +3,189 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Water Calculator with Tank & Pump Suggestions</title>
+    <title>Water Solutions — Menu</title>
     <style>
+      :root {
+        --card: #f7fbff;
+        --border: #dbe7ff;
+        --muted: #5a6a85;
+      }
       body {
         font-family: Arial, sans-serif;
-        max-width: 700px;
-        margin: 30px auto;
-        padding: 20px;
+        max-width: 760px;
+        margin: 32px auto;
+        padding: 24px;
+      }
+      .hero {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 24px;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 1.6rem;
+      }
+      p.lead {
+        margin: 0 0 16px;
+        color: var(--muted);
+      }
+      .btn-row {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin: 12px 0 4px;
+      }
+      .btn {
+        padding: 10px 14px;
+        border-radius: 10px;
         border: 1px solid #ccc;
+        background: white;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 1rem;
+      }
+      .btn.primary {
+        background: #2563eb;
+        color: white;
+        border-color: #1e53c2;
+      }
+      fieldset {
+        margin: 24px 0;
+        border: 1px solid #e5e7eb;
         border-radius: 12px;
+        padding: 16px;
       }
-      label,
-      input,
-      select {
-        display: block;
-        margin-bottom: 12px;
-        width: 100%;
+      legend {
+        padding: 0 6px;
+        color: #334155;
       }
-      button {
-        margin-top: 10px;
-        padding: 10px;
+      .option {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin: 10px 0;
       }
-      .result {
-        margin-top: 20px;
-        padding: 10px;
-        background-color: #eef;
-        border-radius: 8px;
-        margin-bottom: 15px;
+      .tip {
+        margin-top: 18px;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 12px;
+        font-size: 0.95rem;
       }
-      .pump-card {
-        margin-bottom: 15px;
+      footer {
+        margin-top: 24px;
+        color: #6b7280;
+        font-size: 0.92rem;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
       }
-      .pump-card img {
-        width: 100%;
-        max-width: 300px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
+      footer a {
+        color: #2563eb;
+        text-decoration: none;
+      }
+      footer a:hover {
+        text-decoration: underline;
       }
     </style>
   </head>
   <body>
-    <h2>Water Calculator</h2>
+    <div class="hero">
+      <h1>💧 Welcome to the Water Solutions Calculator!</h1>
+      <p class="lead">
+        🌍 Let’s help you reduce water costs, improve efficiency, and ensure
+        supply during water disruptions.
+      </p>
+    </div>
 
-    <label for="municipalityInput">Choose Your Municipality:</label>
-    <input
-      list="municipalityList"
-      id="municipalityInput"
-      placeholder="Start typing..."
-    />
-    <datalist id="municipalityList"></datalist>
+    <fieldset>
+      <legend>🔍 What would you like to do today?</legend>
 
-    <label for="monthlyCost">Average Monthly Water Bill (Rands):</label>
-    <input id="monthlyCost" placeholder="e.g. 300" type="number" />
+      <label class="option">
+        <input type="radio" name="intent" value="backup" />
+        <span>I want to prepare for water disruptions (Backup)</span>
+      </label>
 
-    <label for="backupDays">Number of Days for Backup Water:</label>
-    <input id="backupDays" placeholder="e.g. 3" type="number" />
+      <label class="option">
+        <input type="radio" name="intent" value="reuse" />
+        <span>I want to reuse water / improve efficiency</span>
+      </label>
 
-    <button onclick="calculateWater()">Calculate</button>
+      <label class="option">
+        <input type="radio" name="intent" value="manage" />
+        <span>I want to track and manage my water bills</span>
+      </label>
 
-    <div class="result" id="result" style="display: none"></div>
+      <label class="option">
+        <input type="radio" name="intent" value="esg" />
+        <span>I want an ESG Water Score (quick Yes/No)</span>
+      </label>
 
-    <label for="tankSelect" id="tankLabel" style="display: none"
-      >Select a JoJo Tank:</label
-    >
-    <select id="tankSelect" style="display: none"></select>
+      <label class="option">
+        <input type="radio" name="intent" value="help" />
+        <span>I’m not sure – help me decide</span>
+      </label>
 
-    <div class="result" id="pumpRecommendations" style="display: none"></div>
+      <div class="btn-row">
+        <button id="continueBtn" class="btn primary">➡️ Continue</button>
+      </div>
+
+      <div class="tip">
+        ✅ Tip of the Day:
+        <em
+          >"Install a dual-flush toilet to save up to 67% water per flush."</em
+        >
+      </div>
+    </fieldset>
+
+    <footer>
+      <span>📌 Powered by <strong>Group 10</strong></span> |
+      <a href="#">🔗 Terms</a> |
+      <a href="#">🔒 Privacy</a>
+    </footer>
 
     <script>
-      const jojoTanks = [
-        {
-          size: 260,
-          label: "260L - Emergency/Garden Use",
-          diameter: 670,
-          height: 940,
-        },
-        {
-          size: 525,
-          label: "525L - Small Household/Garden Use",
-          diameter: 840,
-          height: 1080,
-        },
-        {
-          size: 750,
-          label: "750L - Basic Backup",
-          diameter: 980,
-          height: 1200,
-        },
-        {
-          size: 1000,
-          label: "1000L - Small Family Daily Use",
-          diameter: 1110,
-          height: 1300,
-        },
-        {
-          size: 1500,
-          label: "1500L - Moderate Daily Use",
-          diameter: 1410,
-          height: 1200,
-        },
-        {
-          size: 2200,
-          label: "2200L - Backup for 2–3 People",
-          diameter: 1420,
-          height: 1450,
-        },
-        {
-          size: 2500,
-          label: "2500L - Popular Rainwater Harvesting",
-          diameter: 1420,
-          height: 1700,
-        },
-        {
-          size: 5000,
-          label: "5000L - Full Household Backup",
-          diameter: 1900,
-          height: 2200,
-        },
-        {
-          size: 10000,
-          label: "10000L - Large Families/Farm Use",
-          diameter: 2200,
-          height: 2900,
-        },
-        {
-          size: 15000,
-          label: "15000L - Industrial Use",
-          diameter: 2600,
-          height: 3000,
-        },
-        {
-          size: 20000,
-          label: "20000L - Large Scale Storage",
-          diameter: 2800,
-          height: 3200,
-        },
-      ];
+      document.getElementById("continueBtn").addEventListener("click", () => {
+        const chosen = document.querySelector('input[name="intent"]:checked');
+        if (!chosen) {
+          alert("Please select an option before continuing.");
+          return;
+        }
 
-      const pumpRecommendations = {
-        260: ["0.37kW Basic", "0.37kW Peripheral"],
-        525: ["0.37kW Peripheral", "0.55kW Centrifugal"],
-        750: ["0.55kW Centrifugal", "0.6kW Jet"],
-        1000: ["0.6kW Jet", "0.75kW Centrifugal"],
-        1500: ["0.75kW Centrifugal", "1.1kW Centrifugal"],
-        2200: ["1.1kW Centrifugal", "0.75kW VSD"],
-        2500: ["0.75kW HVSD", "1.5kW HVSD"],
-        5000: ["1.5kW HVSD"],
-        10000: ["1.5kW HVSD"],
-        15000: ["1.5kW HVSD"],
-        20000: ["1.5kW HVSD"],
-      };
-
-      const pumpSpecs = {
-        "0.37kW Basic": {
-          "Flow Range": "5–15 L/min",
-          "Pressure Range": "1–2.3 bar",
-          "Max Head": "30m",
-          "Max Flow": "23 L/min",
-          "Use Case": "Toilet, Tap, Small Irrigation",
-        },
-        "0.37kW Peripheral": {
-          "Flow Range": "10–20 L/min",
-          "Pressure Range": "1–2.4 bar",
-          "Max Head": "38m",
-          "Max Flow": "34 L/min",
-          "Use Case": "Bathrooms, Washing Machine",
-        },
-        "0.55kW Centrifugal": {
-          "Flow Range": "30–80 L/min",
-          "Pressure Range": "1.6–2.3 bar",
-          "Max Head": "26m",
-          "Max Flow": "100 L/min",
-          "Use Case": "Irrigation, Dishwasher",
-        },
-        "0.6kW Jet": {
-          "Flow Range": "10–30 L/min",
-          "Pressure Range": "2–3 bar",
-          "Max Head": "36m",
-          "Max Flow": "40 L/min",
-          "Use Case": "Solar, Low Noise",
-        },
-        "0.75kW Centrifugal": {
-          "Flow Range": "40–80 L/min",
-          "Pressure Range": "1.9–2.8 bar",
-          "Max Head": "32m",
-          "Max Flow": "100 L/min",
-          "Use Case": "Full Household",
-        },
-        "1.1kW Centrifugal": {
-          "Flow Range": "40–90 L/min",
-          "Pressure Range": "2.7–3.5 bar",
-          "Max Head": "44m",
-          "Max Flow": "120 L/min",
-          "Use Case": "Large Household",
-        },
-        "0.75kW VSD": {
-          "Flow Range": "13–40 L/min",
-          "Pressure Range": "2–3.5 bar",
-          "Max Head": "45m",
-          "Max Flow": "66 L/min",
-          "Use Case": "Variable Pressure Needs",
-        },
-        "0.75kW HVSD": {
-          "Flow Range": "28–56 L/min",
-          "Pressure Range": "2–4 bar",
-          "Max Head": "53m",
-          "Max Flow": "75 L/min",
-          "Use Case": "High Pressure Applications",
-        },
-        "1.5kW HVSD": {
-          "Flow Range": "51–120 L/min",
-          "Pressure Range": "2–4.5 bar",
-          "Max Head": "56m",
-          "Max Flow": "150 L/min",
-          "Use Case": "Industrial, Large Scale",
-        },
-      };
-
-      let municipalities = [];
-
-      async function loadMunicipalities() {
+        const intent = chosen.value;
         try {
-          const response = await fetch("data/municipalities.txt");
-          const text = await response.text();
-          municipalities = text.split("\n").map((line) => {
-            const [name, rate] = line.split(" = ");
-            return { name: name.trim(), rate: parseFloat(rate.trim()) };
-          });
+          localStorage.setItem("water_intent", intent);
+        } catch {}
 
-          const datalist = document.getElementById("municipalityList");
-          municipalities.forEach((muni) => {
-            const option = document.createElement("option");
-            option.value = muni.name;
-            datalist.appendChild(option);
-          });
-        } catch (error) {
-          console.error("Failed to load municipalities:", error);
-        }
-      }
-
-      function populateTankOptions() {
-        const select = document.getElementById("tankSelect");
-        select.innerHTML = `<option value="">-- Choose a tank size --</option>`;
-        jojoTanks.forEach((tank) => {
-          const option = document.createElement("option");
-          option.value = tank.size;
-          option.textContent = `${tank.label} (${tank.diameter}mm Ø x ${tank.height}mm H)`;
-          select.appendChild(option);
-        });
-      }
-
-      function calculateWater() {
-        const monthlyCost = parseFloat(
-          document.getElementById("monthlyCost").value
-        );
-        const backupDays = parseInt(
-          document.getElementById("backupDays").value
-        );
-        const selectedMuni = document.getElementById("municipalityInput").value;
-
-        if (!selectedMuni || isNaN(monthlyCost) || isNaN(backupDays)) {
-          alert("Please select your municipality and enter valid values.");
+        if (intent === "backup") {
+          window.location.href = "backup.html?mode=backup";
           return;
         }
-
-        const muni = municipalities.find((m) => m.name === selectedMuni);
-        if (!muni) {
-          alert("Municipality not found. Please select from the list.");
+        if (intent === "reuse") {
+          window.location.href = "reuse.html";
           return;
         }
-
-        const muniRate = muni.rate;
-        const litersPerMonth = monthlyCost / muniRate;
-        const dailyUsage = litersPerMonth / 30;
-        const backupLiters = dailyUsage * backupDays;
-        const suggestedTank = jojoTanks.find(
-          (tank) => tank.size >= backupLiters
-        );
-
-        document.getElementById("result").style.display = "block";
-        document.getElementById("result").innerHTML = `
-        <strong>Municipality:</strong> ${selectedMuni}<br>
-        <strong>Water Rate:</strong> R${muniRate.toFixed(3)} per litre (≈ R${(
-          muniRate * 1000
-        ).toFixed(2)}/kl)<br><br>
-        Estimated monthly usage: <strong>${litersPerMonth.toFixed(
-          2
-        )} liters</strong><br>
-        Average daily usage: <strong>${dailyUsage.toFixed(
-          2
-        )} liters/day</strong><br>
-        Backup required: <strong>${backupLiters.toFixed(2)} liters</strong><br>
-        Suggested JoJo Tank: <strong>${
-          suggestedTank ? suggestedTank.label : "No suitable tank found"
-        }</strong><br>
-        ${
-          suggestedTank
-            ? `Dimensions: <strong>${suggestedTank.diameter}mm Ø x ${suggestedTank.height}mm H</strong>`
-            : ""
+        if (intent === "manage") {
+          window.location.href = "manage.html";
+          return;
         }
-      `;
-
-        document.getElementById("tankLabel").style.display = "block";
-        document.getElementById("tankSelect").style.display = "block";
-        populateTankOptions();
-
-        if (suggestedTank) {
-          document.getElementById("tankSelect").value = suggestedTank.size;
-          showPumpRecommendations(suggestedTank.size);
+        if (intent === "help") {
+          window.location.href = "help.html";
+          return;
         }
-      }
-
-      function showPumpRecommendations(tankSize) {
-        const pumpList = pumpRecommendations[tankSize] || [];
-        const pumpContainer = document.getElementById("pumpRecommendations");
-        pumpContainer.style.display = "block";
-
-        if (pumpList.length > 0) {
-          pumpContainer.innerHTML =
-            `<h3>Recommended Pumps:</h3>` +
-            pumpList
-              .map((pump) => {
-                const spec = pumpSpecs[pump];
-                return `
-              <div class="pump-card">
-                <strong>${pump}</strong><br>
-                ${
-                  spec
-                    ? `
-                  Flow Range: ${spec["Flow Range"]}<br>
-                  Pressure Range: ${spec["Pressure Range"]}<br>
-                  Max Head: ${spec["Max Head"]}<br>
-                  Max Flow: ${spec["Max Flow"]}<br>
-                  Use Case: ${spec["Use Case"]}
-                `
-                    : "Specs not found"
-                }
-                <br><br><img src="placeholder.jpg" alt="${pump} image" />
-              </div>
-            `;
-              })
-              .join("");
+        if (intent === "esg") {
+          window.location.href = "esg.html";
+          return;
         } else {
-          pumpContainer.innerHTML = `<p>No pump recommendations available for this tank size.</p>`;
+          // For other options you can customise behaviour
+          alert(
+            "This option will be available soon. Please choose from available options to continue to the calculator."
+          );
         }
-      }
-
-      window.addEventListener("DOMContentLoaded", loadMunicipalities);
+      });
     </script>
   </body>
 </html>

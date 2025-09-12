@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Water Reuse / Efficiency</title>
+    <style>
+      :root {
+        --card: #f7fbff;
+        --border: #dbe7ff;
+        --muted: #5a6a85;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 860px;
+        margin: 32px auto;
+        padding: 24px;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 1.6rem;
+      }
+      p.lead {
+        margin: 0 0 16px;
+        color: var(--muted);
+      }
+      .section {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 18px;
+        margin: 16px 0;
+      }
+      .q {
+        margin-bottom: 14px;
+      }
+      .q h3 {
+        margin: 0 0 8px;
+        font-size: 1.05rem;
+      }
+      .opts {
+        display: grid;
+        gap: 8px;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      }
+      .opt {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 10px;
+        display: flex;
+        gap: 8px;
+        align-items: flex-start;
+      }
+      .btn-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+      .btn {
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        background: white;
+        cursor: pointer;
+        font-size: 1rem;
+      }
+      .btn.primary {
+        background: #2563eb;
+        color: #fff;
+        border-color: #1e53c2;
+      }
+      .muted {
+        color: #5a6a85;
+        font-size: 0.92rem;
+      }
+      .score {
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 12px;
+        margin-top: 12px;
+      }
+      .cards {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        margin-top: 10px;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .card img {
+        width: 100%;
+        height: 170px;
+        object-fit: cover;
+      }
+      .card-body {
+        padding: 12px;
+      }
+      .price {
+        font-weight: bold;
+      }
+      .badge {
+        display: inline-block;
+        background: #eef2ff;
+        color: #3730a3;
+        border: 1px solid #c7d2fe;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 0.8rem;
+      }
+      .guide {
+        background: #fafafa;
+        border: 1px dashed #e5e7eb;
+        border-radius: 10px;
+        padding: 10px;
+      }
+      .split {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: 1fr;
+      }
+      @media (min-width: 900px) {
+        .split {
+          grid-template-columns: 1.1fr 0.9fr;
+        }
+      }
+      a.link {
+        color: #2563eb;
+        text-decoration: none;
+      }
+      a.link:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>💧 Water Reuse / Efficiency Path</h1>
+      <p class="lead">
+        Answer a few questions, get your
+        <strong>Reuse Opportunity Score</strong>, and see tailored solutions to
+        cut water bills and use water smarter.
+      </p>
+      <p class="muted">
+        Tip: You can return to the menu any time.
+        <a class="link" href="index.html">← Back to menu</a>
+      </p>
+    </header>
+
+    <!-- STEP 1 -->
+    <section class="section">
+      <h2>Step 1: Quick Questions</h2>
+
+      <!-- Q1: Property type -->
+      <div class="q">
+        <h3>🏠 1. What type of property is this for?</h3>
+        <div class="opts">
+          <label class="opt"
+            ><input type="radio" name="prop" value="house" /> House</label
+          >
+          <label class="opt"
+            ><input type="radio" name="prop" value="apartment" />
+            Apartment</label
+          >
+          <label class="opt"
+            ><input type="radio" name="prop" value="smallbiz" /> Small business
+            (e.g., salon, café)</label
+          >
+          <label class="opt"
+            ><input type="radio" name="prop" value="sme" /> Larger SME /
+            Office</label
+          >
+        </div>
+      </div>
+
+      <!-- Q2: Goals (multi) -->
+      <div class="q">
+        <h3>
+          🚿 2. What do you want to improve or reuse water for?
+          <span class="muted">(Tick all that apply)</span>
+        </h3>
+        <div class="opts">
+          <label class="opt"
+            ><input type="checkbox" name="goals" value="garden" /> Garden /
+            irrigation</label
+          >
+          <label class="opt"
+            ><input type="checkbox" name="goals" value="toilet" /> Toilet
+            flushing</label
+          >
+          <label class="opt"
+            ><input type="checkbox" name="goals" value="washing" /> Washing
+            machine</label
+          >
+          <label class="opt"
+            ><input type="checkbox" name="goals" value="cleaning" /> Cleaning
+            (e.g., mopping floors)</label
+          >
+          <label class="opt"
+            ><input type="checkbox" name="goals" value="efficiency" /> General
+            efficiency / saving water</label
+          >
+        </div>
+      </div>
+
+      <!-- Q3: Existing installs (multi, optional) -->
+      <div class="q">
+        <h3>
+          💧 3. Do you already have any of the following installed?
+          <span class="muted">(Optional)</span>
+        </h3>
+        <div class="opts">
+          <label class="opt"
+            ><input type="checkbox" name="have" value="tank" /> Water tank (JoJo
+            or similar)</label
+          >
+          <label class="opt"
+            ><input type="checkbox" name="have" value="smart" /> Geyser-wise or
+            smart water meter</label
+          >
+          <label class="opt"
+            ><input type="checkbox" name="have" value="dualflush" /> Dual-flush
+            toilets</label
+          >
+          <label class="opt"
+            ><input type="checkbox" name="have" value="lowflow" /> Low-flow
+            taps/showerheads</label
+          >
+          <label class="opt"
+            ><input type="checkbox" name="have" value="greywater" /> Greywater
+            system</label
+          >
+        </div>
+      </div>
+
+      <!-- Q4: Outdoor space -->
+      <div class="q">
+        <h3>
+          🏡 4. Do you have outdoor space for a water tank or treatment unit?
+        </h3>
+        <div class="opts">
+          <label class="opt"
+            ><input type="radio" name="space" value="yes" /> Yes</label
+          >
+          <label class="opt"
+            ><input type="radio" name="space" value="no" /> No</label
+          >
+          <label class="opt"
+            ><input type="radio" name="space" value="limited" /> Limited / small
+            space</label
+          >
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button id="analyzeBtn" class="btn primary">Analyze & Score</button>
+        <button id="resetBtn" class="btn">↺ Reset</button>
+      </div>
+    </section>
+
+    <div class="split">
+      <!-- STEP 2 -->
+      <section class="section">
+        <h2>Step 2: Reuse Opportunity Score / Analysis</h2>
+        <div id="scoreBox" class="score" style="display: none"></div>
+        <div id="summaryBox" style="display: none; margin-top: 10px"></div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="section">
+        <h2>Step 3: Recommended Solutions</h2>
+        <div id="recBadges" class="btn-row" style="display: none"></div>
+        <div id="productCards" class="cards" style="display: none"></div>
+        <div id="guideList" style="display: none; margin-top: 10px"></div>
+      </section>
+    </div>
+
+    <script>
+      // --- Helpers
+      const $ = (sel) => document.querySelector(sel);
+      const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
+      function getSelections() {
+        const prop =
+          $$('input[name="prop"]:checked').map((i) => i.value)[0] || null;
+        const goals = $$('input[name="goals"]:checked').map((i) => i.value);
+        const have = $$('input[name="have"]:checked').map((i) => i.value);
+        const space =
+          $$('input[name="space"]:checked').map((i) => i.value)[0] || null;
+        return { prop, goals, have, space };
+      }
+
+      function calcScore({ prop, goals, have, space }) {
+        // Heuristic scoring out of 100
+        let score = 0;
+        // Property influence
+        if (prop === "house") score += 25;
+        if (prop === "apartment") score += 15;
+        if (prop === "smallbiz") score += 20;
+        if (prop === "sme") score += 22;
+
+        // Goals
+        const goalWeights = {
+          garden: 20,
+          toilet: 20,
+          washing: 15,
+          cleaning: 10,
+          efficiency: 15,
+        };
+        goals.forEach((g) => (score += goalWeights[g] || 0));
+
+        // Existing installs (readiness/stackability)
+        const haveWeights = {
+          tank: 10,
+          smart: 8,
+          dualflush: 6,
+          lowflow: 6,
+          greywater: 12,
+        };
+        have.forEach((h) => (score += haveWeights[h] || 0));
+
+        // Space availability
+        if (space === "yes") score += 12;
+        if (space === "limited") score += 6;
+        if (space === "no") score += 0;
+
+        // Cap at 100
+        return Math.max(0, Math.min(100, score));
+      }
+
+      function buildSummary(sel, score) {
+        const lines = [];
+        const parts = [];
+
+        if (sel.goals.includes("toilet"))
+          parts.push("greywater for toilet flushing");
+        if (sel.goals.includes("garden"))
+          parts.push("rainwater harvesting for irrigation");
+        if (sel.goals.includes("washing"))
+          parts.push("laundry-to-landscape reuse");
+        if (sel.goals.includes("efficiency") || sel.goals.includes("cleaning"))
+          parts.push("low-flow fixtures & smart metering");
+
+        if (parts.length) {
+          lines.push(
+            `✅ You have strong potential for ${parts
+              .join(", ")
+              .replace(/, ([^,]*)$/, " and $1")}.`
+          );
+        } else {
+          lines.push(
+            `ℹ️ Start with simple wins: leak checks, faucet aerators, and a basic usage tracker.`
+          );
+        }
+
+        if (score >= 75) {
+          lines.push(
+            "💡 With a few devices, you could reduce your bill by ~20–35% depending on usage patterns."
+          );
+        } else if (score >= 50) {
+          lines.push(
+            "💡 You could reduce your bill by ~10–25% by combining two or more measures."
+          );
+        } else {
+          lines.push(
+            "💡 Start small (aerators, dual-flush) and add a compact tank or diverter if space allows."
+          );
+        }
+
+        return lines.join("<br>");
+      }
+
+      // Product catalog (local placeholders). Prices are example ballparks.
+      const CATALOG = {
+        diverter: {
+          name: "Greywater Diverter (Shower/Bath → Garden/Toilet)",
+          price: "R1,200 – R2,500",
+          tag: "Greywater",
+          img: "placeholder.jpg",
+          desc: "Routes bath/shower water for reuse. Add basic filtration before irrigation.",
+        },
+        laundry: {
+          name: "Laundry-to-Landscape Kit",
+          price: "R950 – R1,600",
+          tag: "Greywater",
+          img: "placeholder.jpg",
+          desc: "Reuses washing machine water for garden via safe dispersal. Includes lint filter.",
+        },
+        dualflush: {
+          name: "Dual-Flush Converter (Toilet)",
+          price: "R350 – R900",
+          tag: "Efficiency",
+          img: "placeholder.jpg",
+          desc: "Retrofit existing cisterns to reduce flush volume (big/small buttons).",
+        },
+        aerators: {
+          name: "Low-Flow Tap/Shower Aerator Set",
+          price: "R200 – R600",
+          tag: "Efficiency",
+          img: "placeholder.jpg",
+          desc: "Cuts flow 30–50% with minimal comfort loss; quick DIY install.",
+        },
+        smart: {
+          name: "Smart Water Meter / Leak Monitor",
+          price: "R1,200 – R3,500",
+          tag: "Monitoring",
+          img: "placeholder.jpg",
+          desc: "Tracks usage, spots leaks, sends alerts. Pairs with phone app.",
+        },
+        tank525: {
+          name: "Slimline Tank 525–750L + Basic Filter",
+          price: "R2,500 – R4,200",
+          tag: "Storage",
+          img: "placeholder.jpg",
+          desc: "Compact storage for small spaces; pair with rain diverter on downpipe.",
+        },
+        tank1000: {
+          name: "Tank 1000–2500L + Rain Diverter Kit",
+          price: "R4,500 – R9,500",
+          tag: "Storage",
+          img: "placeholder.jpg",
+          desc: "Great for irrigation & toilet backup; add leaf catcher & first-flush.",
+        },
+        drip: {
+          name: "Drip Irrigation Starter Kit (50–100m²)",
+          price: "R850 – R1,800",
+          tag: "Irrigation",
+          img: "placeholder.jpg",
+          desc: "Maximizes garden efficiency; works well with tanks and greywater.",
+        },
+        pump: {
+          name: "Small Transfer Pump (0.37–0.6kW)",
+          price: "R1,000 – R2,300",
+          tag: "Pumping",
+          img: "placeholder.jpg",
+          desc: "Moves stored/reused water to toilets or garden with modest pressure.",
+        },
+        filter: {
+          name: "Inline Filter / Mesh & Lint Guard",
+          price: "R150 – R500",
+          tag: "Filtration",
+          img: "placeholder.jpg",
+          desc: "Protects emitters and prevents blockages when reusing water.",
+        },
+      };
+
+      function recommend(sel) {
+        const items = new Map(); // key -> product object
+        // Goals → products
+        if (sel.goals.includes("toilet")) {
+          items.set("diverter", CATALOG.diverter);
+          items.set("dualflush", CATALOG.dualflush);
+          items.set("pump", CATALOG.pump);
+          items.set("filter", CATALOG.filter);
+        }
+        if (sel.goals.includes("garden")) {
+          items.set("drip", CATALOG.drip);
+          items.set("filter", CATALOG.filter);
+          if (sel.space === "yes") items.set("tank1000", CATALOG.tank1000);
+          if (sel.space === "limited") items.set("tank525", CATALOG.tank525);
+        }
+        if (sel.goals.includes("washing")) {
+          items.set("laundry", CATALOG.laundry);
+          items.set("filter", CATALOG.filter);
+          if (sel.space !== "no") items.set("tank525", CATALOG.tank525);
+        }
+        if (sel.goals.includes("cleaning")) {
+          items.set("pump", CATALOG.pump);
+          items.set("aerators", CATALOG.aerators);
+        }
+        if (sel.goals.includes("efficiency")) {
+          items.set("aerators", CATALOG.aerators);
+          items.set("dualflush", CATALOG.dualflush);
+          items.set("smart", CATALOG.smart);
+        }
+
+        // Existing installs can refine recs
+        if (sel.have.includes("tank") && !items.has("pump"))
+          items.set("pump", CATALOG.pump);
+        if (sel.have.includes("greywater")) items.set("filter", CATALOG.filter);
+        if (sel.have.includes("smart")) items.set("smart", CATALOG.smart);
+
+        // Space constraints
+        if (sel.space === "no") {
+          items.delete("tank525");
+          items.delete("tank1000");
+        }
+
+        // Fallback if nothing chosen
+        if (items.size === 0) {
+          items.set("aerators", CATALOG.aerators);
+          items.set("dualflush", CATALOG.dualflush);
+          items.set("smart", CATALOG.smart);
+        }
+
+        return Array.from(items.values());
+      }
+
+      function guidesFor(sel) {
+        const out = [];
+        if (sel.goals.includes("toilet"))
+          out.push("How to plumb a basic greywater diverter safely");
+        if (sel.goals.includes("washing"))
+          out.push(
+            "Laundry-to-landscape: safe soaps, lint control, and routing"
+          );
+        if (sel.goals.includes("garden"))
+          out.push("Setting up drip irrigation with a small tank or diverter");
+        if (sel.goals.includes("efficiency"))
+          out.push("Top 5 water-saving devices for your home/flat");
+        if (sel.have.includes("smart"))
+          out.push("Using smart meter dashboards to hunt leaks and spikes");
+        if (out.length === 0)
+          out.push(
+            "Water-saving basics: aerators, dual-flush, and weekly usage checks"
+          );
+        return out;
+      }
+
+      function renderScore(score, sel) {
+        const box = $("#scoreBox");
+        const summary = $("#summaryBox");
+        const tone =
+          score >= 75
+            ? "Strong potential"
+            : score >= 50
+            ? "Good potential"
+            : "Starter potential";
+        box.style.display = "block";
+        summary.style.display = "block";
+        box.innerHTML = `<strong>Reuse Opportunity Score:</strong> ${score}/100 &nbsp; <span class="badge">${tone}</span>`;
+        summary.innerHTML = buildSummary(sel, score);
+      }
+
+      function renderRecs(products, sel) {
+        const badges = $("#recBadges");
+        const cards = $("#productCards");
+        const guides = $("#guideList");
+
+        // badges
+        const tags = [...new Set(products.map((p) => p.tag))];
+        badges.style.display = "flex";
+        badges.innerHTML = tags
+          .map((t) => `<span class="badge">${t}</span>`)
+          .join(" ");
+
+        // cards
+        cards.style.display = "grid";
+        cards.innerHTML = products
+          .map(
+            (p) => `
+        <div class="card">
+          <img src="${p.img}" alt="${p.name}" onerror="this.style.display='none'"/>
+          <div class="card-body">
+            <div class="badge">${p.tag}</div>
+            <h4 style="margin:8px 0 6px;">${p.name}</h4>
+            <div class="price">${p.price}</div>
+            <p class="muted" style="margin:8px 0 0;">${p.desc}</p>
+          </div>
+        </div>
+      `
+          )
+          .join("");
+
+        // guides
+        const g = guidesFor(sel);
+        guides.style.display = "block";
+        guides.innerHTML = `
+        <div class="guide">
+          <strong>Recommended Guides / How-tos</strong>
+          <ul style="margin:8px 0 0 18px;">
+            ${g.map((x) => `<li>${x}</li>`).join("")}
+          </ul>
+        </div>
+      `;
+      }
+
+      // --- Events
+      $("#analyzeBtn").addEventListener("click", () => {
+        const sel = getSelections();
+
+        // Basic validation: need at least property + one goal
+        if (!sel.prop) {
+          alert("Please select a property type.");
+          return;
+        }
+        if (sel.goals.length === 0) {
+          alert("Please choose at least one goal.");
+          return;
+        }
+        if (!sel.space) {
+          alert("Please indicate your available space.");
+          return;
+        }
+
+        const score = calcScore(sel);
+        renderScore(score, sel);
+        const recs = recommend(sel);
+        renderRecs(recs, sel);
+
+        // Persist (optional)
+        try {
+          localStorage.setItem("reuse_answers", JSON.stringify(sel));
+        } catch {}
+      });
+
+      $("#resetBtn").addEventListener("click", () => {
+        $$('input[type="radio"], input[type="checkbox"]').forEach(
+          (i) => (i.checked = false)
+        );
+        $("#scoreBox").style.display = "none";
+        $("#summaryBox").style.display = "none";
+        $("#recBadges").style.display = "none";
+        $("#productCards").style.display = "none";
+        $("#guideList").style.display = "none";
+        try {
+          localStorage.removeItem("reuse_answers");
+        } catch {}
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      // Pre-fill if we saved answers earlier
+      (function restore() {
+        try {
+          const saved = JSON.parse(
+            localStorage.getItem("reuse_answers") || "null"
+          );
+          if (!saved) return;
+          if (saved.prop) {
+            const i = $(`input[name="prop"][value="${saved.prop}"]`);
+            if (i) i.checked = true;
+          }
+          if (Array.isArray(saved.goals))
+            saved.goals.forEach((v) => {
+              const i = $(`input[name="goals"][value="${v}"]`);
+              if (i) i.checked = true;
+            });
+          if (Array.isArray(saved.have))
+            saved.have.forEach((v) => {
+              const i = $(`input[name="have"][value="${v}"]`);
+              if (i) i.checked = true;
+            });
+          if (saved.space) {
+            const i = $(`input[name="space"][value="${saved.space}"]`);
+            if (i) i.checked = true;
+          }
+        } catch {}
+      })();
+    </script>
+  </body>
+</html>
